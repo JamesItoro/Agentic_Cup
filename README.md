@@ -2,6 +2,8 @@
 
 A secure, AI-assisted project onboarding portal. From new joiner to contributing team member, faster.
 
+**New here? See [GETTING_STARTED.md](GETTING_STARTED.md) to run it locally in a few minutes.**
+
 This repository is being delivered in two stages:
 
 - **Stage A (current): the web application.** A believable, working onboarding portal built on a mock data layer, with no database and no AI backend. Login, onboarding progress, the knowledge hub and project isolation all work so the experience can be reviewed end to end.
