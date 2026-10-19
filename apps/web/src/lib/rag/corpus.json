@@ -1,0 +1,344 @@
+[
+  {
+    "id": "d-sow#0",
+    "docId": "d-sow",
+    "title": "Statement of Work",
+    "sourceType": "Signed SOW",
+    "date": "2025-05-02",
+    "authority": "baselined",
+    "content": "Statement of Work - Project Phoenix\nAI-Powered Customer Service Platform\nClient: LanPhilAlex & Miller Retail Group Ltd\nPrepared by: Accenture\nDocument version: 1.3 | Status: Signed | Date: 9 May 2025\n1. Engagement Overview\nLanPhilAlex & Miller Retail Group ('the Client') has engaged Accenture to design, build, and deploy an\nAI-powered customer service platform (internally codenamed 'Project Phoenix') that unifies chat and voice\ncustomer contact channels, integrates with existing order management and loyalty systems, and deflects Tier-1\ncontact volume away from the Client's human contact-centre agents while improving resolution speed for\ncustomers.\n2. Scope of Services\n• Design and build a conversational AI bot supporting web chat and voice (via Amazon Connect), covering order\nstatus, returns/refunds, and general product Q&A intents.\n• Build a data integration layer unifying customer, order, and product data from the Client's legacy systems into a\nplatform-native data store.\n• Deliver an agent desktop interface enabling human agents to view conversation history and receive\nAI-assisted handoffs.\n• Deliver a change management and training programme for contact-centre agents and store colleagues.\n• Support User Acceptance Testing (UAT) and go-live cutover.\n3. Out of Scope\nAny capability not explicitly listed in Section 2 is out of scope for this Statement of Work, including (without\nlimitation) product recommendation or personalised merchandising features. Such items may be delivered\nunder a separate Change Request following the change control process defined in Section 7.\n4. Timeline & Phases\nPhase Weeks Key Deliverables\nDiscovery & Design 1-4 Solution architecture, data mapping, UX designs\nBuild Sprint 1 5-8 Core bot intents, data pipeline foundations\nBuild Sprint 2 & Integration 9-12 MVP delivery, system integration, load testing\nTesting, UAT & Go-Live 13-16 UAT, training rollout, cutover, hypercare\n5. Roles & Governance\nAccenture will provide a Project Lead responsible for day-to-day delivery, reporting to an Engagement Partner\nwho holds overall account accountability. Weekly status reports will be issued to the Client's Executive Sponsor.\nA monthly Steering Committee will review progress, risks, and any change requests. A RAID log will be\nmaintained by the Project Lead and reviewed at each Steering Committee.\n6. Commercial Terms"
+  },
+  {
+    "id": "d-sow#1",
+    "docId": "d-sow",
+    "title": "Statement of Work",
+    "sourceType": "Signed SOW",
+    "date": "2025-05-02",
+    "authority": "baselined",
+    "content": "-- 1 of 2 --\n\nCommercial terms, the applicable rate card, and total contract value are set out in the Master Services\nAgreement (MSA) and the associated Order Form, held separately by Accenture Commercial and the Client's\nProcurement function. They are not reproduced in this Statement of Work.\n7. Change Control\nAny request to modify scope, timeline, or deliverables must be raised as a Change Request, jointly assessed for\nimpact by the Accenture Project Lead and Client Executive Sponsor, and formally approved before work\ncommences. Discovery spikes may be logged in the backlog ahead of formal approval to de-risk estimation, but\ndo not constitute authorisation to proceed with build.\n\n-- 2 of 2 --"
+  },
+  {
+    "id": "d-hld#0",
+    "docId": "d-hld",
+    "title": "Solution Architecture (HLD)",
+    "sourceType": "Baselined High Level Design",
+    "date": "2025-07-22",
+    "authority": "baselined",
+    "content": "Solution Architecture - High Level Design\nProject Phoenix - AI-Powered Customer Service Platform\nAuthor: Aisha Rahman & Priya Shah\nDocument version: 0.8 (draft)\nDate: 3 June 2025\n1. Component Overview\nComponent AWS Service Purpose\nVoice channel Amazon Connect Inbound/outbound voice, call recording, IVR\nDialogue & intent mgmt Amazon Lex Coarse intent classification, slot filling for the top-8\ntrained intents\nGenerative / complex query\nhandling\nAWS Bedrock Foundation model for intents outside the top-8, RAG\nover knowledge base\nKnowledge base retrieval Amazon OpenSearch + S3 Vector store for FAQ / policy content used in RAG\nOrchestration API Gateway + Lambda Routes messages between Lex, Bedrock, and data\nlayer\nData store DynamoDB Customer360, Orders, ConversationLog tables\nAgent desktop React (custom) Human agent UI for handoffs and conversation history\n2. Data Flow - Simple Intent\nCustomer message arrives via web widget or Connect → Lex classifies intent (one of top-8 trained intents, e.g.\norder status) → Lambda orchestrator performs slot filling → DynamoDB lookup (Orders / Customer360) →\ntemplated response returned to customer. Typical round trip target: under 1.5s.\n3. Data Flow - Complex / Generative Intent\nCustomer message falls outside the top-8 trained intents → Lambda orchestrator retrieves relevant\nknowledge-base chunks from OpenSearch → conversation context + retrieved chunks passed to Bedrock →\ngenerated response returned to customer, with a confidence/sentiment check that may trigger escalation to a\nlive agent via the /handoff endpoint. Target p95 round trip: 3.5s.\n4. Non-Functional Requirements\n• Performance: p95 response latency ≤ 3.5s for generative path, ≤ 1.5s for simple intent path.\n• Availability: 99.5% uptime for customer-facing endpoints during contact-centre operating hours.\n• Security: PII fields (email, address, payment references) encrypted at rest and in transit; access via\nleast-privilege IAM roles.\n• Data residency: all customer data stored within UK/EU AWS regions.\n• Scalability: architecture must sustain Black-Friday-equivalent peak concurrency without manual intervention.\n5. Open Items\nRecommendation engine capability is not represented in this architecture and is not currently in scope (see\nStatement of Work, Section 3). Should this be approved via change control, an additional personalisation\nservice and product-affinity data model would need to be scoped separately."
+  },
+  {
+    "id": "d-hld#1",
+    "docId": "d-hld",
+    "title": "Solution Architecture (HLD)",
+    "sourceType": "Baselined High Level Design",
+    "date": "2025-07-22",
+    "authority": "baselined",
+    "content": "-- 1 of 1 --"
+  },
+  {
+    "id": "d-org#0",
+    "docId": "d-org",
+    "title": "Team Org Chart",
+    "sourceType": "Org chart",
+    "date": "2025-07-15",
+    "authority": "official",
+    "content": "Project Phoenix - Team Org Chart\nAccenture delivery team, formal reporting lines\nMaintained by: Maria Osei, Project Lead\nLast updated: 15 July 2025\nNote: reflects formal role and reporting line assignment from project resourcing. Short-term day-to-day task reassignments (e.g.\ncovering for absence or peak-priority work) are tracked via sprint boards and team channels, not reflected here in real time. See\nPHX-151 for a pending update.\nName Role Workstream Reports To\nTom Whitfield Engagement Partner Account Leadership Accenture Managing\nDirector (off-project)\nMaria Osei Project Lead Cross-workstream Tom Whitfield\nAisha Rahman Workstream Lead Conversational AI Maria Osei\nSarah Kowalski NLU / Intent Classification Engineer Conversational AI Aisha Rahman\nJordan Reyes Bot Developer (Lex / Connect) Conversational AI Aisha Rahman\nBen Foster Conversation Designer Conversational AI Aisha Rahman\nPriyanka Nair QA Engineer Conversational AI Aisha Rahman\nPriya Shah Workstream Lead Data & Integration Maria Osei\nAlex Turner Data Engineer (on leave from Wk10) Data & Integration Priya Shah\nLiam O'Connor Integration Engineer Data & Integration Priya Shah\nFatima Al-Sayed Data Quality Analyst Data & Integration Priya Shah\nRavi Kumar Backend Developer Data & Integration Priya Shah\nMarcus Webb Workstream Lead Change & Adoption Maria Osei\nEmma Clarke Training & Comms Lead Change & Adoption Marcus Webb\nNoah Bennett Change Analyst Change & Adoption Marcus Webb\nTotal headcount: 15. Client-side stakeholders are not shown here - see Stakeholder Map."
+  },
+  {
+    "id": "d-org#1",
+    "docId": "d-org",
+    "title": "Team Org Chart",
+    "sourceType": "Org chart",
+    "date": "2025-07-15",
+    "authority": "official",
+    "content": "-- 1 of 1 --"
+  },
+  {
+    "id": "d-status-11#0",
+    "docId": "d-status-11",
+    "title": "Status Report: Week 11",
+    "sourceType": "Weekly status report",
+    "date": "2025-08-01",
+    "authority": "official",
+    "content": "Project Phoenix - Weekly Status Report\nReporting period: Week 11 (w/c 28 Jul 2025)\nPrepared by: Maria Osei, Project Lead\nDate issued: 1 August 2025\nDistribution: Client Steering, Accenture Account Leadership\nOverall RAG: Amber\nWorkstream RAG Status\nConversational AI Amber\nData & Integration Amber\nChange & Adoption Green\nKey Achievements This Period\n• MVP delivered end of Week 10 as planned.\n• Full-scale load testing completed against production-representative volumes.\n• UAT scripts drafted for core flows (order status, returns).\n• Training materials v1 complete, change readiness survey round 2 launched.\nRisks & Blockers\n• Performance issue identified in load testing: p95 response latency for Bedrock-backed intent classification\nmeasured at 6.2s against a 3.5s target. Root cause under investigation, fix targeted before the CTO demo on 13\nAug. This is currently the single biggest risk to the demo date.\n• Data quality issue found in legacy order-history extract (~8% duplicate customer records), being remediated,\ntargeted complete 8 Aug. Does not block the CTO demo but adds pressure to the UAT start date.\n• Alex Turner (Data Engineer) on leave from Week 10; no confirmed backfill before Week 13. Team is prioritising\nruthlessly to protect critical-path work.\n• Marketing's request to add a product recommendation capability remains under review with the client PM; not\nyet approved via change control.\nFocus for Next Period\n• Land and regression-test the latency fix (target: 11 Aug).\n• Complete data cleansing to unblock UAT start.\n• Finalise and rehearse CTO demo script.\n• Confirm interim resourcing options for Data & Integration."
+  },
+  {
+    "id": "d-status-11#1",
+    "docId": "d-status-11",
+    "title": "Status Report: Week 11",
+    "sourceType": "Weekly status report",
+    "date": "2025-08-01",
+    "authority": "official",
+    "content": "-- 1 of 1 --"
+  },
+  {
+    "id": "d-status-8#0",
+    "docId": "d-status-8",
+    "title": "Status Report: Week 8",
+    "sourceType": "Weekly status report",
+    "date": "2025-07-11",
+    "authority": "official",
+    "content": "Project Phoenix - Weekly Status Report\nReporting period: Week 8 (w/c 30 Jun 2025)\nPrepared by: Maria Osei, Project Lead\nDate issued: 11 July 2025\nDistribution: Client Steering, Accenture Account Leadership\nOverall RAG: Green\nWorkstream RAG Status\nConversational AI Green\nData & Integration Green\nChange & Adoption Amber\nKey Achievements This Period\n• Core Lex bot intents built and unit tested (order status, returns initiation, store locator).\n• DynamoDB schema finalised for Customer360, Orders, and ConversationLog tables.\n• Legacy data migration underway, initial sample reconciliation clean.\n• AWS Bedrock model access tier upgrade approved by client, unblocking generative path development.\nRisks & Blockers\n• Training content development behind schedule, driving Change & Adoption to Amber - additional writing\nsupport being brought in to recover.\n• Minor: procurement delay on Bedrock model access tier (resolved this period).\nFocus for Next Period\n• Complete generative-path integration for out-of-scope intents.\n• Begin full-scale (production-representative volume) load testing.\n• Recover training content schedule.\n• Continue legacy data migration and reconciliation.\n\n-- 1 of 1 --"
+  },
+  {
+    "id": "d-jira#0",
+    "docId": "d-jira",
+    "title": "ADO / Jira Board Export",
+    "sourceType": "Delivery board export",
+    "date": "2025-08-05",
+    "authority": "official",
+    "content": "Key,Summary,Type,Status,Assignee,Priority,Workstream,Sprint,Created,Updated\nPHX-118,Investigate Bedrock p95 latency regression under load,Bug,In Progress,Jordan Reyes,Highest,Conversational AI,Sprint 6,2025-07-29,2025-08-05\nPHX-119,Reduce prompt size for Bedrock intent fallback path,Task,In Progress,Sarah Kowalski,High,Conversational AI,Sprint 6,2025-07-30,2025-08-04\nPHX-120,Add response caching for repeat order-status queries,Story,To Do,Jordan Reyes,High,Conversational AI,Sprint 6,2025-07-30,2025-07-31\nPHX-121,Define rate limiting policy for peak load (Black Friday equivalent),Task,Backlog,Priya Shah,Medium,Data & Integration,Unscheduled,2025-07-30,2025-07-30\nPHX-231,Product Recommendation Engine - discovery spike,Spike,Backlog,Priya Shah,Low,Data & Integration,Unscheduled,2025-07-22,2025-07-22\nPHX-104,Cleanse duplicate customerId records in legacy order extract,Bug,In Progress,Fatima Al-Sayed,High,Data & Integration,Sprint 6,2025-07-28,2025-08-04\nPHX-105,Reassign data pipeline monitoring tasks (interim cover),Task,Blocked,Liam O'Connor,Medium,Data & Integration,Sprint 6,2025-07-25,2025-08-01\nPHX-142,Finalise UAT script for returns flow,Task,In Review,Priyanka Nair,Medium,Conversational AI,Sprint 6,2025-07-27,2025-08-03\nPHX-143,Demo script v1 - CTO walkthrough,Task,In Progress,Aisha Rahman,High,Conversational AI,Sprint 6,2025-08-01,2025-08-05\nPHX-150,Intent classification accuracy tuning - returns vs refunds,Story,In Progress,Sarah Kowalski,High,Conversational AI,Sprint 6,2025-07-26,2025-08-04\nPHX-151,Org chart update - reflect temporary demo-prep support,Task,To Do,Maria Osei,Low,Change & Adoption,Sprint 6,2025-08-05,2025-08-05\nPHX-200,Build Lex slot-filling for order lookup,Story,Done,Sarah Kowalski,Medium,Conversational AI,Sprint 3,2025-06-23,2025-06-28\nPHX-201,Wire agent-desktop handoff button to Connect,Story,To Do,Aisha Rahman,Low,Conversational AI,Sprint 4,2025-06-16,2025-06-19\nPHX-202,Unit tests for orchestrator Lambda,Task,In Review,Jordan Reyes,Highest,Conversational AI,Sprint 6,2025-07-14,2025-08-01\nPHX-203,Fix duplicate greeting bug on channel switch,Bug,In Progress,Jordan Reyes,Medium,Conversational AI,Sprint 6,2025-07-28,2025-08-03\nPHX-204,Load test harness for peak-hour simulation,Task,Done,Ben Foster,High,Conversational AI,Sprint 3,2025-06-23,2025-07-28\nPHX-205,Voice IVR fallback menu copy,Task,To Do,Priyanka Nair,Medium,Conversational AI,Sprint 5,2025-07-28,2025-08-05\nPHX-206,Sentiment flag for escalation trigger,Story,In Progress,Sarah Kowalski,Highest,Conversational AI,Sprint 5,2025-07-07,2025-07-25\nPHX-207,Refactor Lex bot alias deployment pipeline,Task,Backlog,Aisha Rahman,High,Conversational AI,Sprint 4,2025-07-21,2025-07-23\nPHX-208,DynamoDB Customer360 table schema v2,Task,To Do,Ravi Kumar,High,Data & Integration,Sprint 5,2025-07-28,2025-08-05\nPHX-209,API Gateway throttling config for peak load,Task,Backlog,Priya Shah,Medium,Data & Integration,Sprint 4,2025-06-23,2025-07-05\nPHX-210,Nightly batch job for order status sync,Story,Backlog,Ravi Kumar,Highest,Data & Integration,Sprint 4,2025-07-14,2025-07-20\nPHX-211,Fix stale inventory data in product lookup,Bug,In Progress,Fatima Al-Sayed,Low,Data & Integration,Sprint 4,2025-06-30,2025-07-18\nPHX-212,OpenSearch index for knowledge base RAG,Task,Done,Ravi Kumar,High,Data & Integration,Sprint 6,2025-07-28,2025-08-05\nPHX-213,PII field encryption audit,Task,To Do,Ravi Kumar,High,Data & Integration,Sprint 6,2025-07-14,2025-07-21\nPHX-214,Data retention policy implementation,Story,Backlog,Priya Shah,Low,Data & Integration,Sprint 4,2025-06-23,2025-06-28\nPHX-215,Fix broken foreign key on Orders table,Bug,In Review,Alex Turner,Medium,Data & Integration,Sprint 6,2025-07-21,2025-08-04\nPHX-216,Backfill missing loyalty tier field,Task,In Review,Ravi Kumar,High,Data & Integration,Sprint 3,2025-07-14,2025-07-17\nPHX-217,Draft agent training deck v2,Task,In Progress,Emma Clarke,High,Change & Adoption,Sprint 3,2025-07-28,2025-08-05\nPHX-218,Schedule UAT sessions with store ops team,Task,To Do,Noah Bennett,Low,Change & Adoption,Sprint 3,2025-07-14,2025-08-01\nPHX-219,Comms email - go-live announcement draft,Task,To Do,Marcus Webb,Medium,Change & Adoption,Sprint 3,2025-07-28,2025-08-05\nPHX-220,Change readiness survey - round 2,Story,To Do,Noah Bennett,High,Change & Adoption,Sprint 4,2025-07-07,2025-07-16\nPHX-221,Floor walker briefing pack,Task,To Do,Marcus Webb,Medium,Change & Adoption,Sprint 4,2025-07-28,2025-08-05\nPHX-222,Post go-live support rota,Task,Backlog,Emma Clarke,High,Change & Adoption,Sprint 5,2025-07-14,2025-07-15\nPHX-223,Update FAQ knowledge base articles,Task,Done,Priyanka Nair,Highest,Conversational AI,Sprint 3,2025-06-30,2025-07-08\nPHX-224,Security review - Connect call recording storage,Task,Blocked,Fatima Al-Sayed,Highest,Data & Integration,Sprint 4,2025-06-16,2025-06-19\nPHX-225,Fix incorrect refund status label in widget,Bug,Backlog,Jordan Reyes,Low,Conversational AI,Sprint 6,2025-07-14,2025-07-23\nPHX-226,Set up CloudWatch alarms for Lambda errors,Task,In Review,Fatima Al-Sayed,High,Data & Integration,Sprint 5,2025-07-21,2025-08-03\nPHX-227,Agent desktop UI - conversation history pane,Story,In Review,Priyanka Nair,Low,Conversational AI,Sprint 3,2025-06-16,2025-06-24\nPHX-228,Localise widget copy for accessibility review,Task,Done,Noah Bennett,High,Change & Adoption,Sprint 3,2025-07-14,2025-07-15\nPHX-229,Automate nightly Bedrock cost report,Task,In Review,Liam O'Connor,Highest,Data & Integration,Sprint 4,2025-06-16,2025-06-19\nPHX-230,Fix timezone bug in order timestamp display,Bug,Backlog,Ben Foster,Low,Conversational AI,Sprint 6,2025-06-23,2025-06-28\nPHX-240,Draft rollback plan for go-live,Task,In Progress,Fatima Al-Sayed,Low,Data & Integration,Sprint 6,2025-06-23,2025-06-27\nPHX-232,Contact centre shrinkage model for post go-live,Task,To Do,Noah Bennett,Low,Change & Adoption,Sprint 3,2025-07-07,2025-07-11\nPHX-233,Penetration test remediation - auth token scope,Bug,Backlog,Priya Shah,Highest,Data & Integration,Sprint 6,2025-06-23,2025-06-30\nPHX-234,Write runbook for Lex bot redeploy,Task,To Do,Jordan Reyes,High,Conversational AI,Sprint 3,2025-06-30,2025-07-08\nPHX-235,Store manager briefing session - Manchester pilot store,Task,In Review,Noah Bennett,Highest,Change & Adoption,Sprint 3,2025-06-16,2025-07-04\nPHX-236,Fix flaky integration test for handoff flow,Bug,In Review,Sarah Kowalski,High,Conversational AI,Sprint 4,2025-07-07,2025-07-23\nPHX-237,Define go-live exit criteria checklist,Task,Done,Priya Shah,High,Data & Integration,Sprint 5,2025-07-07,2025-07-20\nPHX-238,Add multi-language greeting support,Story,Blocked,Priyanka Nair,Low,Conversational AI,Sprint 4,2025-07-21,2025-08-05\nPHX-239,Investigate Connect call recording S3 lifecycle cost,Task,Blocked,Fatima Al-Sayed,High,Data & Integration,Sprint 3,2025-06-16,2025-07-04"
+  },
+  {
+    "id": "d-standup#0",
+    "docId": "d-standup",
+    "title": "Meeting Notes: Daily Standup",
+    "sourceType": "Standup notes",
+    "date": "2025-08-05",
+    "authority": "informal",
+    "content": "PROJECT PHOENIX - DAILY STANDUP NOTES\nTuesday 5 August 2025, 09:15 BST | 15 min | Teams call\nAttendees: Aisha Rahman (chair), Sarah Kowalski, Jordan Reyes, Ben Foster, Priyanka Nair, Liam O'Connor, Ravi Kumar\n\nFormat: yesterday / today / blockers, ConvAI + Data & Integration only (Change & Adoption has separate Tue/Thu standup)\n\nAisha:\n- Y: Pulled together first draft of CTO demo script with Sarah.\n- T: Reviewing latency fix approach with Jordan, prepping demo run-through for Thu.\n- Blocker: none\n\nSarah:\n- Y: Demo script draft (with Aisha) + started on prompt-size reduction spike.\n- T: Continuing prompt-size work, will hand off intent-tuning ticket (PHX-150) to Ben for a couple of days if demo prep runs long.\n- Blocker: stretched between two things this week, flagged to Aisha.\n\nJordan:\n- Y: Reproduced the p95 latency issue consistently in UAT env - averaging 6.1-6.4s under simulated peak, vs 3.5s target.\n- T: Testing whether trimming RAG context window + switching to streamed responses gets us under target. PHX-118/119.\n- Blocker: need confirmation from Priya's side that DynamoDB read latency isn't contributing - waiting on her."
+  },
+  {
+    "id": "d-standup#1",
+    "docId": "d-standup",
+    "title": "Meeting Notes: Daily Standup",
+    "sourceType": "Standup notes",
+    "date": "2025-08-05",
+    "authority": "informal",
+    "content": "Ben:\n- Y: Returns flow conversation design, finished happy path.\n- T: Picking up PHX-150 (intent tuning) if Sarah hands it off, otherwise continuing edge cases on returns flow.\n- Blocker: none\n\nPriyanka:\n- Y: UAT script for returns flow, about 80% done.\n- T: Finish UAT script, start test data prep for load re-test.\n- Blocker: none\n\nLiam:\n- Y: Investigating DynamoDB read latency contribution to overall response time - looks marginal (<200ms), not the main driver.\n- T: Will confirm formally to Jordan today.\n- Blocker: none\n\nRavi:\n- Y: Backend support for order-status endpoint, minor bug fix on timezone display.\n- T: Picking up some of Alex's monitoring tasks on an interim basis (PHX-105) since we still don't have a backfill confirmed.\n- Blocker: no formal cover for Alex yet - Priya chasing with Maria/Tom.\n\nAisha (wrap-up): Reminder - CTO demo is 13 Aug (8 days away). Latency fix is the single biggest thing standing between us and a clean demo. Everyone flag anything that threatens that date immediately, don't wait for standup."
+  },
+  {
+    "id": "d-steering#0",
+    "docId": "d-steering",
+    "title": "Meeting Notes: Client Steering",
+    "sourceType": "Steering committee notes",
+    "date": "2025-07-31",
+    "authority": "informal",
+    "content": "PROJECT PHOENIX - MONTHLY CLIENT STEERING COMMITTEE\nThursday 31 July 2025, 14:00-15:00 BST | LanPhilAlex & Miller HQ, Manchester (hybrid)\n\nAttendees:\n- Rachel Ingram - CTO, LanPhilAlex & Miller (Executive Sponsor)\n- Derek Voss - Head of Marketing, LanPhilAlex & Miller\n- James Okafor - COO, LanPhilAlex & Miller (joined for first 20 min)\n- Tom Whitfield - Engagement Partner, Accenture\n- Maria Osei - Project Lead, Accenture\n- Priya Shah - Workstream Lead, Data & Integration (dialled in for data quality item)\n\nApologies: none\n\n1. Overall progress (Maria)\nMaria presented Week 11 status: overall Amber, driven by a performance issue found during load testing (intent classification response time) and a data quality issue in the legacy order extract. MVP was delivered end of Week 10 as planned. Maria was clear the team has line of sight to resolving the latency issue before the CTO demo but flagged it as the single biggest risk to a clean demo on 13 August."
+  },
+  {
+    "id": "d-steering#1",
+    "docId": "d-steering",
+    "title": "Meeting Notes: Client Steering",
+    "sourceType": "Steering committee notes",
+    "date": "2025-07-31",
+    "authority": "informal",
+    "content": "Rachel asked directly: \"Will we be ready for the 13th?\" Maria's response: high confidence in the demo script and underlying functionality, medium confidence specifically on the latency fix landing with enough time to regression test - team is targeting a fix by 11 Aug, which leaves a 2-day buffer.\n\n2. Data quality (Priya)\nPriya explained the ~8% duplicate customerId issue found in the legacy order-history extract, root-caused to a historical merge of two loyalty programmes. Cleansing is in progress (target 8 Aug) and does not block the CTO demo, but does put pressure on the UAT start date. Rachel asked whether this affects data used in the demo - Priya confirmed demo dataset is a curated subset, unaffected.\n\n3. Resourcing (Maria / Tom)\nMaria flagged Alex Turner's leave and the resulting pressure on the Data & Integration workstream. Tom confirmed Accenture is sourcing an interim data engineer but realistically not before Week 13, i.e. after the demo. Client noted for awareness, no action requested of them."
+  },
+  {
+    "id": "d-steering#2",
+    "docId": "d-steering",
+    "title": "Meeting Notes: Client Steering",
+    "sourceType": "Steering committee notes",
+    "date": "2025-07-31",
+    "authority": "informal",
+    "content": "4. Recommendation engine ask (Derek)\nDerek raised, again, that Marketing would like a product recommendation capability included, ideally visible in some form at the CTO demo, noting \"the CEO specifically asked about this last week.\" Maria reiterated this is outside the current SOW scope and would need to go through formal change control before any commitment on timeline or cost; a discovery spike is logged (PHX-231) but not started. Tom supported Maria's position and offered to set up a separate 30-min call with Derek to scope a change request, decoupled from the current go-live. Derek accepted but pushed for that call to happen \"this week, not next.\" ACTION: Tom to set up call with Derek by 4 Aug.\nNote for the record: this is a live scope discussion, not yet resolved - status differs depending who you ask (see also email thread \"Scope Discussion - Recommendation Engine Ask\").\n\n5. AOB\nJames (before leaving early) asked about store pilot list - Marcus Webb to confirm pilot stores by next steering.\n\nNext steering: Thursday 28 August 2025 (post go-live retro slot to be added)."
+  },
+  {
+    "id": "d-archreview#0",
+    "docId": "d-archreview",
+    "title": "Meeting Notes: Architecture Review",
+    "sourceType": "Architecture review notes",
+    "date": "2025-07-24",
+    "authority": "informal",
+    "content": "PROJECT PHOENIX - ARCHITECTURE REVIEW (INTERNAL)\nWednesday 30 July 2025, 11:00-12:00 BST | Teams call\n\nAttendees:\n- Aisha Rahman - Workstream Lead, Conversational AI (chair)\n- Priya Shah - Workstream Lead, Data & Integration\n- Jordan Reyes - Bot Developer\n- Liam O'Connor - Integration Engineer\n- Fatima Al-Sayed - Data Quality Analyst\n- Sarah Kowalski - NLU/Intent Classification Engineer (first 20 min only)\n\nPurpose: root-cause the latency issue found in Week 11 load testing and align on data quality remediation plan.\n\n1. Latency root cause (Jordan / Sarah)\nLoad test results: p95 response time 6.2s against a 3.5s target, consistent across three test runs. Sarah walked through the current RAG pipeline - customer message goes to Lex for coarse intent, then for anything outside the top-8 trained intents, the full conversation context plus a knowledge-base retrieval chunk gets sent to Bedrock. The retrieved context chunk has grown over the build (currently averaging ~2,800 tokens) as more FAQ content was added without pruning. Group agreed this is the primary suspect, alongside cold-start latency on the orchestrator Lambda when traffic is bursty."
+  },
+  {
+    "id": "d-archreview#1",
+    "docId": "d-archreview",
+    "title": "Meeting Notes: Architecture Review",
+    "sourceType": "Architecture review notes",
+    "date": "2025-07-24",
+    "authority": "informal",
+    "content": "Agreed actions:\n- Jordan + Sarah: trim retrieval to top-3 most relevant chunks + summarise long chunks before adding to context (PHX-119)\n- Jordan: move orchestrator Lambda to provisioned concurrency for the demo window to eliminate cold starts (PHX-118)\n- Liam: confirmed DynamoDB read latency is not a material contributor (<200ms of the 6.2s), ruled out as root cause\n- Re-test load scenario by end of day Monday 4 Aug, results to Aisha + Maria before Tue standup\n\nSarah left the call after this item to get back onto demo-prep work with Aisha.\n\n2. Data quality findings (Fatima)\nFatima presented the reconciliation results: approximately 8% of customerId values in the legacy order-history extract are duplicated, traced to a 2021 merge of two historical loyalty programmes that assigned new IDs without deprecating the old ones. This wasn't visible in the Week 8 sample data (which happened to be drawn from post-merge records only) - it only surfaced once the full 3-year extract was reconciled in Week 10-11, which is why the Week 8 status report shows Data & Integration as Green and the Week 11 report shows Amber."
+  },
+  {
+    "id": "d-archreview#2",
+    "docId": "d-archreview",
+    "title": "Meeting Notes: Architecture Review",
+    "sourceType": "Architecture review notes",
+    "date": "2025-07-24",
+    "authority": "informal",
+    "content": "Agreed actions:\n- Fatima: build a dedup/merge rule keyed on email + original loyalty number, target complete by 8 Aug (PHX-104)\n- Priya: confirm with client data owner whether historical order value should be summed or take-latest on merge\n- Group agreed this does not block the CTO demo (demo uses a clean curated dataset) but is on the critical path for UAT start\n\n3. AOB\nLiam raised that with Alex out and no confirmed backfill, he and Ravi are absorbing pipeline monitoring on top of their existing tickets (PHX-105) - flagged as a risk to sustaining pace post-demo, not just pre-demo. Priya to keep escalating."
+  },
+  {
+    "id": "d-raid#0",
+    "docId": "d-raid",
+    "title": "RAID Log",
+    "sourceType": "Risks/Assumptions/Issues/Dependencies log",
+    "date": "2025-08-04",
+    "authority": "official",
+    "content": "Type,ID,Description,Owner,Severity/Priority,Status,Raised Date,Notes\nRisk,R1,Bedrock-backed intent classification p95 latency (6.2s measured) exceeds 3.5s SLA target under peak load; directly impacts live CTO demo credibility,Aisha Rahman,High,Open,2025-07-30,\"Root cause suspected: oversized RAG prompt context + cold Lambda starts. Fix in progress, PHX-118/119.\"\nRisk,R2,Alex Turner (Data Engineer) on leave from Week 10 with no confirmed backfill; reduces Data & Integration capacity ahead of go-live,Priya Shah,High,Open,2025-07-18,\"Escalated to Tom Whitfield 24 Jul, see resource escalation email thread. Interim contractor floated, start date not before Wk13.\"\nRisk,R3,Data quality issues in legacy order-history extract - approx 8% duplicate customerId records found during reconciliation,Fatima Al-Sayed,Medium,Open,2025-07-24,Drove Data & Integration RAG from Green (Wk8) to Amber (Wk11). Cleansing task PHX-104 in progress.\nRisk,R4,Marketing (Derek Voss) requesting Product Recommendation Engine be added to scope ahead of CTO demo; not in original SOW,Maria Osei,Medium,Open,2025-07-21,\"Status differs by source: change control 'on hold' per Maria, Jira spike 'Backlog', Wk11 status report says 'under review'. Needs single source of truth.\"\nRisk,R5,Client procurement delay on AWS Bedrock model access tier upgrade,Tom Whitfield,Low,Closed,2025-06-20,Resolved Week 9 - upgraded tier approved 27 Jun.\nRisk,R6,Contact centre agents may resist agent-assist tool if perceived as monitoring / performance surveillance,Marcus Webb,Medium,Open,2025-07-10,Change readiness survey round 2 in flight.\nAssumption,A1,Client will provide production-representative order volume data for load testing by Week 9,Priya Shah,-,Validated,2025-05-20,\"Data received Week 9, later found to have quality issues (see R3).\"\nAssumption,A2,Client contact-centre agents have baseline digital literacy sufficient for 2-day training programme,Marcus Webb,-,Validated,2025-05-20,Confirmed via Wk3 skills survey.\nAssumption,A3,AWS Bedrock model quota sufficient for peak Black Friday-equivalent load without further upgrade,Aisha Rahman,-,Unvalidated,2025-07-30,Under review pending load test rerun post latency fix.\nIssue,I1,\"Sarah Kowalski temporarily reassigned to CTO demo-script support, reducing bandwidth on intent-classification tuning (PHX-150)\",Aisha Rahman,Medium,Open,2025-08-04,\"Informal reassignment via Slack, not yet reflected in org chart (PHX-151 raised to update).\"\nIssue,I2,Two Wk8 vs Wk11 status reports show conflicting Data & Integration RAG (Green vs Amber) with no linking narrative in either report,Maria Osei,Low,Open,2025-08-01,Root cause documented in R3 and architecture review notes - recommend adding 'change since last report' section to template.\nIssue,I3,Store ops director has not yet confirmed pilot store list for go-live,Marcus Webb,Medium,Open,2025-07-28,Chased twice; response expected by Wk13 steering.\nDependency,D1,Go-live dependent on client InfoSec sign-off of PII encryption approach,Priya Shah,-,Open,2025-06-01,Review scheduled Week 13.\nDependency,D2,CTO demo script dependent on latency fix (R1) landing by 11 Aug,Aisha Rahman,-,Open,2025-08-01,Hard dependency - demo is 13 Aug.\nDependency,D3,UAT start dependent on data cleansing (PHX-104) completing,Fatima Al-Sayed,-,Open,2025-07-28,Targeted for 8 Aug."
+  },
+  {
+    "id": "d-email-scope#0",
+    "docId": "d-email-scope",
+    "title": "Email: Scope Discussion (Recommendation Engine)",
+    "sourceType": "Email thread",
+    "date": "2025-07-30",
+    "authority": "informal",
+    "content": "EMAIL THREAD: Recommendation Engine ask - scope & timeline\n(Exported from Outlook - names shown as sent)\n\n----------------------------------------------------------------\nFrom: Derek Voss <derek.voss@lanphilalexmiller.example>\nTo: Maria Osei <maria.osei@accenture.example>\nCc: Rachel Ingram <rachel.ingram@lanphilalexmiller.example>\nDate: Mon 21 Jul 2025, 09:14\nSubject: Product recommendation engine - can we get this in before the demo?\n\nHi Maria,\n\nFollowing up from last week's catch-up - I'd really like us to explore adding a product recommendation capability to Phoenix. Nothing fancy to start, even \"customers who bought this also bought\" would be a huge win for the marketing team, and honestly it would make the CTO demo land a lot better with the wider exec team.\n\nIs this something we could realistically slot in before 13 Aug?\n\nDerek"
+  },
+  {
+    "id": "d-email-scope#1",
+    "docId": "d-email-scope",
+    "title": "Email: Scope Discussion (Recommendation Engine)",
+    "sourceType": "Email thread",
+    "date": "2025-07-30",
+    "authority": "informal",
+    "content": "----------------------------------------------------------------\nFrom: Maria Osei <maria.osei@accenture.example>\nTo: Derek Voss <derek.voss@lanphilalexmiller.example>\nCc: Rachel Ingram <rachel.ingram@lanphilalexmiller.example>; Tom Whitfield <tom.whitfield@accenture.example>\nDate: Mon 21 Jul 2025, 16:47\nSubject: RE: Product recommendation engine - can we get this in before the demo?\n\nHi Derek,\n\nThanks for flagging - appreciate the enthusiasm. To be straight with you: this wasn't in the original SOW scope, and the team's full capacity between now and the 13th is committed to stabilising what we've already built (we found a performance issue in load testing last week that needs to be our priority).\n\nI don't want to commit to something for the demo that we then have to walk back. What I'd suggest: we log a discovery spike now so we're not starting from zero (done - PHX-231), and we scope a proper change request for this to run as a fast-follow after go-live. That protects the demo date and gives the recommendation engine the attention it deserves rather than bolting it on in two weeks.\n\nFor now I'd treat this as on hold pending change control, not part of the current sprint.\n\nMaria"
+  },
+  {
+    "id": "d-email-scope#2",
+    "docId": "d-email-scope",
+    "title": "Email: Scope Discussion (Recommendation Engine)",
+    "sourceType": "Email thread",
+    "date": "2025-07-30",
+    "authority": "informal",
+    "content": "----------------------------------------------------------------\nFrom: Derek Voss <derek.voss@lanphilalexmiller.example>\nTo: Maria Osei <maria.osei@accenture.example>\nCc: Rachel Ingram <rachel.ingram@lanphilalexmiller.example>; Tom Whitfield <tom.whitfield@accenture.example>\nDate: Tue 22 Jul 2025, 08:52\nSubject: RE: RE: Product recommendation engine - can we get this in before the demo?\n\nMaria,\n\nUnderstood on the performance issue taking priority. I still think it's worth exploring even a very cut-down version - can we at least get a sizing/estimate this week so I can manage expectations upward? The CEO asked about this by name in Monday's exec meeting so I need something more than \"on hold\" to bring back.\n\nDerek\n\n----------------------------------------------------------------\nFrom: Tom Whitfield <tom.whitfield@accenture.example>\nTo: Derek Voss <derek.voss@lanphilalexmiller.example>\nCc: Maria Osei <maria.osei@accenture.example>; Rachel Ingram <rachel.ingram@lanphilalexmiller.example>\nDate: Tue 22 Jul 2025, 13:20\nSubject: RE: RE: RE: Product recommendation engine - can we get this in before the demo?"
+  },
+  {
+    "id": "d-email-scope#3",
+    "docId": "d-email-scope",
+    "title": "Email: Scope Discussion (Recommendation Engine)",
+    "sourceType": "Email thread",
+    "date": "2025-07-30",
+    "authority": "informal",
+    "content": "Derek - let's take this off email. I'll set up 30 minutes this week for you, me and Maria to properly scope this as a change request, independent of the go-live timeline. That gives you something concrete for the CEO without putting the 13th at risk. I'll send an invite.\n\nTom\n\n----------------------------------------------------------------\n[No further replies in this thread as of 1 Aug 2025 export. Meeting referenced in this thread had not yet occurred - see Client Steering notes, 31 Jul, item 4, where Derek pushed for the call to happen \"this week, not next.\"]"
+  },
+  {
+    "id": "d-email-resource#0",
+    "docId": "d-email-resource",
+    "title": "Email: Resource Escalation",
+    "sourceType": "Email thread",
+    "date": "2025-07-24",
+    "authority": "informal",
+    "content": "EMAIL THREAD: Alex Turner cover - resourcing risk\n(Exported from Outlook - names shown as sent)\n\n----------------------------------------------------------------\nFrom: Priya Shah <priya.shah@accenture.example>\nTo: Maria Osei <maria.osei@accenture.example>\nDate: Thu 17 Jul 2025, 17:03\nSubject: Need to talk about Alex's leave cover\n\nMaria,\n\nAlex goes on leave from Monday (Wk10) and as of now I have no confirmed backfill. Liam and Ravi can absorb some of his monitoring work short-term but not his data engineering deliverables - specifically the cleansing/reconciliation work is going to slip if it's just the three of us plus Fatima.\n\nCan we raise this with Tom? I'd like a plan in place before Alex actually goes, not after.\n\nPriya\n\n----------------------------------------------------------------\nFrom: Maria Osei <maria.osei@accenture.example>\nTo: Priya Shah <priya.shah@accenture.example>\nCc: Tom Whitfield <tom.whitfield@accenture.example>\nDate: Fri 18 Jul 2025, 09:41\nSubject: RE: Need to talk about Alex's leave cover\n\nPriya,"
+  },
+  {
+    "id": "d-email-resource#1",
+    "docId": "d-email-resource",
+    "title": "Email: Resource Escalation",
+    "sourceType": "Email thread",
+    "date": "2025-07-24",
+    "authority": "informal",
+    "content": "Agreed, looping Tom in now. Tom - can we discuss options at Monday's leadership sync? Priya needs either an interim data engineer or a firm view on what we deprioritise on Data & Integration until Alex is back.\n\nMaria\n\n----------------------------------------------------------------\nFrom: Tom Whitfield <tom.whitfield@accenture.example>\nTo: Maria Osei <maria.osei@accenture.example>; Priya Shah <priya.shah@accenture.example>\nDate: Mon 21 Jul 2025, 18:12\nSubject: RE: RE: Need to talk about Alex's leave cover\n\nBoth,\n\nSpoke to resourcing. Realistic options:\n1. Pull someone from the Meridian account bench - earliest start would be Wk13 (after the demo), not before.\n2. Backfill internally from within Phoenix - not viable, everyone's already stretched given the latency issue.\n\nI know option 1 doesn't help before the 13th. Priya - can you and the team prioritise ruthlessly for the next 3 weeks? Data cleansing and anything blocking UAT takes priority over anything \"nice to have.\" I'll keep pushing resourcing for an earlier start if anything opens up.\n\nTom"
+  },
+  {
+    "id": "d-email-resource#2",
+    "docId": "d-email-resource",
+    "title": "Email: Resource Escalation",
+    "sourceType": "Email thread",
+    "date": "2025-07-24",
+    "authority": "informal",
+    "content": "----------------------------------------------------------------\nFrom: Priya Shah <priya.shah@accenture.example>\nTo: Tom Whitfield <tom.whitfield@accenture.example>; Maria Osei <maria.osei@accenture.example>\nDate: Tue 22 Jul 2025, 08:30\nSubject: RE: RE: RE: Need to talk about Alex's leave cover\n\nUnderstood, thanks Tom. We'll prioritise the cleansing work (targeting complete 8 Aug) and Liam/Ravi will cover monitoring on an interim basis. Flagging this formally as a risk on the RAID log (R2) so it's visible to the client at steering if needed - I don't think we need to raise it with them directly right now, it's not blocking the demo, just adds pressure into UAT.\n\nPriya\n\n----------------------------------------------------------------\n[Thread ends here as of 1 Aug 2025 export. No confirmed start date for interim cover as of Week 12.]"
+  },
+  {
+    "id": "d-datadict#0",
+    "docId": "d-datadict",
+    "title": "Data Dictionary",
+    "sourceType": "Reference data",
+    "date": "2025-07-18",
+    "authority": "official",
+    "content": "Entity,Field,Type,Description,Source System,Owner\nCustomer,customerId,String (UUID),Unique customer identifier,DynamoDB - Customer360,Liam O'Connor\nCustomer,email,String,\"Customer email address, used for order lookup fallback\",DynamoDB - Customer360,Liam O'Connor\nCustomer,loyaltyTier,Enum (Bronze/Silver/Gold),\"Loyalty programme tier, drives response tone/offers\",DynamoDB - Customer360,Fatima Al-Sayed\nCustomer,preferredChannel,Enum (chat/voice/email),Customer's last-used contact channel,DynamoDB - Customer360,Fatima Al-Sayed\nCustomer,consentMarketing,Boolean,Marketing comms consent flag,DynamoDB - Customer360,Fatima Al-Sayed\nCustomer,createdDate,ISO 8601 Date,Account creation date,Legacy CRM export,Fatima Al-Sayed\nOrder,orderId,String (UUID),Unique order identifier,DynamoDB - Orders,Liam O'Connor\nOrder,customerId,String (UUID),Foreign key to Customer table,DynamoDB - Orders,Liam O'Connor\nOrder,status,Enum (placed/dispatched/delivered/returned/cancelled),Current order lifecycle status,DynamoDB - Orders,Ravi Kumar\nOrder,storeId,String,Fulfilling store or 'ECOM' for e-commerce,Legacy POS export,Ravi Kumar\nOrder,totalValue,Decimal,Order total in GBP,DynamoDB - Orders,Ravi Kumar\nOrder,returnEligible,Boolean,Whether order is within return window,Computed - Lambda,Ravi Kumar\nOrder,dispatchDate,ISO 8601 Date,Date order dispatched from warehouse,Legacy WMS export,Ravi Kumar\nConversation,conversationId,String (UUID),Unique chat/voice session identifier,DynamoDB - ConversationLog,Jordan Reyes\nConversation,channel,Enum (webchat/voice),Channel conversation originated on,DynamoDB - ConversationLog,Jordan Reyes\nConversation,intent,String,Top-level intent classified by Lex/Bedrock,DynamoDB - ConversationLog,Sarah Kowalski\nConversation,confidenceScore,Float 0-1,Model confidence for classified intent,DynamoDB - ConversationLog,Sarah Kowalski\nConversation,escalatedToHuman,Boolean,Whether conversation was handed off to a live agent,DynamoDB - ConversationLog,Jordan Reyes\nConversation,sentimentFlag,Enum (positive/neutral/negative),Detected customer sentiment,DynamoDB - ConversationLog,Sarah Kowalski\nProduct,sku,String,Stock keeping unit identifier,Legacy PIM export,Priya Shah\nProduct,name,String,Product display name,Legacy PIM export,Priya Shah\nProduct,stockLevel,Integer,\"Current stock count, store or warehouse\",Legacy WMS export,Ravi Kumar\nProduct,category,String,Merchandising category,Legacy PIM export,Priya Shah\nAgent,agentId,String,Contact centre agent identifier,Legacy WFM export,Priya Shah\nAgent,team,String,Contact centre team/queue,Legacy WFM export,Priya Shah\nAgent,skillTags,String (comma-separated),Agent skill routing tags,Legacy WFM export,Priya Shah"
+  },
+  {
+    "id": "d-apispec#0",
+    "docId": "d-apispec",
+    "title": "API Spec Excerpt",
+    "sourceType": "API specification",
+    "date": "2025-07-28",
+    "authority": "official",
+    "content": "{\n  \"info\": {\n    \"title\": \"Project Phoenix - Chatbot Service API (Excerpt)\",\n    \"version\": \"0.9.0-draft\",\n    \"description\": \"Excerpt of key endpoints for the Phoenix conversational AI service. Full spec maintained in the platform team's internal repo; this excerpt covers the endpoints most relevant to onboarding.\",\n    \"note\": \"DRAFT - endpoint paths and error codes subject to change before go-live sign-off.\"\n  },\n  \"servers\": [\n    {\n      \"url\": \"https://api.phoenix.internal.accenture-lm-project.example/v1\",\n      \"description\": \"Non-production (UAT) environment\"\n    }\n  ],\n  \"endpoints\": [\n    {\n      \"path\": \"/conversations\",\n      \"method\": \"POST\",\n      \"summary\": \"Start a new conversation session\",\n      \"requestBody\": {\n        \"customerId\": \"string (optional)\",\n        \"channel\": \"enum[webchat, voice]\"\n      },\n      \"responses\": {\n        \"201\": {\n          \"conversationId\": \"string\",\n          \"createdAt\": \"ISO8601\"\n        },\n        \"400\": \"Invalid channel\"\n      }\n    },\n    {\n      \"path\": \"/conversations/{conversationId}/messages\",\n      \"method\": \"POST\",\n      \"summary\": \"Send a customer message and receive the bot's response\",\n      \"requestBody\": {\n        \"text\": \"string\",\n        \"locale\": \"string (default en-GB)\"\n      },\n      \"responses\": {\n        \"200\": {\n          \"intent\": \"string\",\n          \"confidenceScore\": \"float\",\n          \"responseText\": \"string\",\n          \"escalate\": \"boolean\"\n        },\n        \"504\": \"Model timeout - see PHX-118 latency investigation\"\n      }\n    },\n    {\n      \"path\": \"/orders/{orderId}\",\n      \"method\": \"GET\",\n      \"summary\": \"Retrieve order status and details\",\n      \"responses\": {\n        \"200\": {\n          \"orderId\": \"string\",\n          \"status\": \"string\",\n          \"dispatchDate\": \"date\",\n          \"returnEligible\": \"boolean\"\n        },\n        \"404\": \"Order not found\"\n      }\n    },\n    {\n      \"path\": \"/customers/{customerId}\",\n      \"method\": \"GET\",\n      \"summary\": \"Retrieve customer profile for personalisation\",\n      \"responses\": {\n        \"200\": {\n          \"customerId\": \"string\",\n          \"loyaltyTier\": \"string\",\n          \"preferredChannel\": \"string\"\n        },\n        \"404\": \"Customer not found\"\n      }\n    },\n    {\n      \"path\": \"/handoff\",\n      \"method\": \"POST\",\n      \"summary\": \"Escalate an in-progress conversation to a live contact-centre agent\",\n      \"requestBody\": {\n        \"conversationId\": \"string\",\n        \"reason\": \"enum[low_confidence, negative_sentiment, customer_request]\"\n      },\n      \"responses\": {\n        \"202\": {\n          \"queueId\": \"string\",\n          \"estimatedWaitSeconds\": \"integer\"\n        },\n        \"503\": \"No agents available\"\n      }\n    }\n  ],\n  \"openItems\": [\n    \"Recommendation engine endpoint (proposed /recommendations) NOT yet in scope - see RAID log R4 and scope discussion email thread\",\n    \"Rate limiting policy for peak load (Black Friday equivalent) still under design - see PHX-120, PHX-121\"\n  ]\n}"
+  },
+  {
+    "id": "d-testing#0",
+    "docId": "d-testing",
+    "title": "Testing Strategy",
+    "sourceType": "Test strategy",
+    "date": "2025-07-20",
+    "authority": "official",
+    "content": "Testing Strategy - Project Phoenix\nAI-Powered Customer Service Platform\nAuthor: Priyanka Nair, QA Engineer\nDocument version: 1.1\nDate: 15 June 2025\n1. Test Levels\nLevel Owner Approach\nUnit testing Engineers (per workstream) Automated, run in CI on every commit\nIntegration testing Jordan Reyes / Liam O'Connor Automated suite covering Lex-Lambda-DynamoDB\nand Bedrock RAG paths\nPerformance / load\ntesting\nJordan Reyes Simulated peak-hour and Black-Friday-equivalent\nconcurrency against UAT env\nSecurity testing Client InfoSec + Accenture Penetration test + PII handling review prior to go-live\nUAT Priyanka Nair (facilitator), client\ncontact-centre agents\nScripted scenarios plus exploratory testing, Weeks\n13-14\n2. UAT Plan\nUAT will run across Weeks 13-14 with a panel of 8 contact-centre agents and 2 store colleagues, covering order\nstatus, returns/refunds, and escalation-to-human scenarios. UAT start is dependent on completion of the legacy\ndata cleansing effort (target 8 Aug) so that agents are testing against reliable data.\n3. Go-Live Exit Criteria\n• p95 response latency ≤ 3.5s sustained across a full load-test cycle.\n• Zero open P1 (Highest priority) defects; P2 defects have an agreed workaround.\n• UAT sign-off received from client UAT lead.\n• Rollback plan documented and dry-run tested.\n• Agent training completion ≥ 90% across in-scope contact-centre teams.\n• InfoSec sign-off on PII encryption approach."
+  },
+  {
+    "id": "d-testing#1",
+    "docId": "d-testing",
+    "title": "Testing Strategy",
+    "sourceType": "Test strategy",
+    "date": "2025-07-20",
+    "authority": "official",
+    "content": "-- 1 of 1 --"
+  },
+  {
+    "id": "d-stakeholder#0",
+    "docId": "d-stakeholder",
+    "title": "Stakeholder Map",
+    "sourceType": "Stakeholder reference",
+    "date": "2025-07-12",
+    "authority": "official",
+    "content": "Stakeholder Map - Project Phoenix\nClient and Accenture stakeholders\nAuthor: Marcus Webb, Workstream Lead - Change & Adoption\nDocument version: 1.0\nDate: 22 May 2025\nName Role Organisation Power Interest Notes\nRachel Ingram CTO / Executive\nSponsor\nLanPhilAlex & Miller High High Primary audience for CTO\ndemo, final go-live decision\nmaker\nDerek Voss Head of Marketing LanPhilAlex & Miller Medium High Advocating for recommendation\nengine add-on; manage\nexpectations closely\nJames Okafor COO LanPhilAlex & Miller High Medium Focused on store operations\nimpact and pilot rollout\nStore Ops Director Store Operations LanPhilAlex & Miller Medium Medium Owns pilot store selection,\nresponse pending\nClient InfoSec Lead Information Security LanPhilAlex & Miller Medium Low Gate-keeper for go-live security\nsign-off\nProcurement Lead Procurement LanPhilAlex & Miller Low Low Handles MSA/Order Form, not\ninvolved in day-to-day delivery\nTom Whitfield Engagement Partner Accenture High Medium Account-level oversight,\nescalation point\nMaria Osei Project Lead Accenture Medium High Day-to-day delivery\naccountability\nEngagement Approach\nHigh power / high interest stakeholders (Rachel Ingram) are managed directly by Tom Whitfield and Maria Osei\nwith weekly touchpoints. Derek Voss (high interest, medium power) requires careful expectation management\ngiven his scope-expansion requests - all commitments to him should be made jointly with Maria to avoid\nconflicting messages."
+  },
+  {
+    "id": "d-stakeholder#1",
+    "docId": "d-stakeholder",
+    "title": "Stakeholder Map",
+    "sourceType": "Stakeholder reference",
+    "date": "2025-07-12",
+    "authority": "official",
+    "content": "-- 1 of 1 --"
+  },
+  {
+    "id": "d-change#0",
+    "docId": "d-change",
+    "title": "Change Management Plan",
+    "sourceType": "Change & adoption plan",
+    "date": "2025-07-16",
+    "authority": "official",
+    "content": "Change Management Plan - Project Phoenix\nAdoption, training, and communications approach\nAuthor: Marcus Webb / Emma Clarke\nDocument version: 1.2\nDate: 10 June 2025\n1. Adoption Timeline\nPhase Weeks Activity\nAwareness 1-4 Kickoff comms, stakeholder briefings\nPreparation 5-10 Training content development, change readiness surveys\nReadiness 11-14 Agent training delivery, UAT participation, pilot store briefings\nGo-Live & Reinforcement 15-16 Go-live comms, floor support, post-launch survey\n2. Training Approach\nContact-centre agents receive a 2-day blended training programme covering the agent-assist desktop,\nescalation handling, and conversation history review. Store colleagues involved in the pilot receive a condensed\nhalf-day briefing. Training completion is tracked against a 90% target as part of go-live exit criteria.\n3. Communications Schedule\n• Week 1: Kickoff email to all contact-centre and store colleagues introducing Project Phoenix.\n• Week 8: Midpoint update - what's changing and why, addressing early questions/concerns.\n• Week 12: Change readiness survey round 2 (in flight) to gauge sentiment ahead of go-live.\n• Week 15: Go-live announcement with clear support channels.\n• Week 17 (post-launch): Survey to capture agent feedback and adoption blockers.\n4. Change Readiness Risk\nEarly survey feedback flagged some concern among contact-centre agents that the agent-assist tool could be\nperceived as a monitoring/performance-management tool rather than a support aid. Comms and training\nmaterials have been adjusted to explicitly address this, and it is being tracked as an open risk (see RAID log,\nR6)."
+  },
+  {
+    "id": "d-change#1",
+    "docId": "d-change",
+    "title": "Change Management Plan",
+    "sourceType": "Change & adoption plan",
+    "date": "2025-07-16",
+    "authority": "official",
+    "content": "-- 1 of 1 --"
+  },
+  {
+    "id": "d-slack#0",
+    "docId": "d-slack",
+    "title": "Slack Export",
+    "sourceType": "Team chat export",
+    "date": "2025-08-05",
+    "authority": "informal",
+    "content": "#project-phoenix - channel export (Mon 4 Aug - Tue 5 Aug 2025)\n(Exported for onboarding pack. Times BST.)\n\n============================================================\nMonday 4 August 2025\n============================================================\n\n[08:52] Aisha Rahman: morning all - big week, demo is 13th which is 9 days out from today. anything that could threaten that date, shout early, don't sit on it 🙏\n\n[08:53] Jordan Reyes: reproduced the latency issue again this morning, still averaging ~6.2s p95 in UAT. digging into the prompt trimming approach today\n\n[09:01] Priyanka Nair: UAT script for returns flow done, moved to In Review (PHX-142)\n\n[09:15] Aisha Rahman: @Sarah Kowalski can you help me pull the demo script together this week? Ben's underwater on the returns flow edge cases and I need someone who really knows the intent model to make sure the script doesn't hit any of the weak spots\n\n[09:16] Sarah Kowalski: yeah can do, will context switch off PHX-150 for a few days - Ben can you pick that up if it gets stuck?\n\n[09:17] Ben Foster: sure, ping me when\n\n[09:20] Sarah Kowalski: 🙏 starting on demo script now"
+  },
+  {
+    "id": "d-slack#1",
+    "docId": "d-slack",
+    "title": "Slack Export",
+    "sourceType": "Team chat export",
+    "date": "2025-08-05",
+    "authority": "informal",
+    "content": "[10:03] Liam O'Connor: confirmed - DynamoDB read latency is not the driver on the p95 issue, it's consistently under 200ms. told Jordan\n\n[10:04] Jordan Reyes: 🙏 thanks Liam, rules that out, focusing on the RAG context size then\n\n[11:47] Fatima Al-Sayed: dedup rule for the customerId issue is coming together, should have a first pass by Thursday\n\n[13:32] Ravi Kumar: heads up I'm picking up some of Alex's monitoring alerts this week since there's still no cover confirmed - if anyone sees weird pipeline alerts and I haven't responded, ping me directly, still getting familiar with his dashboards\n\n[14:10] Marcus Webb: change readiness survey round 2 is live, please nudge your client counterparts if you know any store managers, response rate a bit low so far\n\n[16:45] Aisha Rahman: demo script v1 drafted with Sarah, will share for review tomorrow. still contingent on the latency fix landing, that's the real dependency\n\n============================================================\nTuesday 5 August 2025\n============================================================"
+  },
+  {
+    "id": "d-slack#2",
+    "docId": "d-slack",
+    "title": "Slack Export",
+    "sourceType": "Team chat export",
+    "date": "2025-08-05",
+    "authority": "informal",
+    "content": "[09:02] Jordan Reyes: prompt trimming is looking promising - test run this morning came back at 3.9s p95, down from 6.2s. not under target yet but big improvement\n\n[09:03] Aisha Rahman: 🎉 nice. what's left to close the gap to 3.5s?\n\n[09:05] Jordan Reyes: moving the orchestrator lambda to provisioned concurrency should knock off the cold-start piece, doing that today. hoping for sub-3.5 by Thursday's re-test\n\n[09:40] Sarah Kowalski: demo script v1 is with Aisha for review, back on PHX-150 intent tuning this afternoon if nothing else comes up\n\n[10:12] Priya Shah: reminder for the Data & Integration folks - cleansing work (PHX-104) takes priority over anything not blocking UAT or the demo, per Tom's steer last week\n\n[11:05] Emma Clarke: training deck v2 is with Marcus for review, aiming to circulate to store managers by end of week\n\n[13:20] Derek Voss: (external, added temporarily for this thread) hi all - following up on getting a time locked in for the rec-engine scoping call, keen to get this moving this week if possible\n\n[13:41] Tom Whitfield: @Derek Voss sending an invite for Thursday, will keep it to a scoping conversation, separate from the 13th"
+  },
+  {
+    "id": "d-slack#3",
+    "docId": "d-slack",
+    "title": "Slack Export",
+    "sourceType": "Team chat export",
+    "date": "2025-08-05",
+    "authority": "informal",
+    "content": "[15:02] Maria Osei: status report for Wk11 is out to steering distribution, flagging latency (R1) as the number one risk to the demo date, everything else is manageable in the background\n\n[16:30] Jordan Reyes: provisioned concurrency change deployed to UAT, will have fresh load test numbers tomorrow AM\n\n[16:58] Aisha Rahman: great work today team. remember - PHX-151 to update the org chart for Sarah's temporary demo-prep support, don't want that causing confusion for anyone new joining this week"
+  }
+]

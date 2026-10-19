@@ -1,0 +1,110 @@
+@import "tailwindcss";
+
+/*
+ * Project Compass AI, design tokens
+ * Accenture-inspired palette (see PLAN.md §4.1). Not an officially approved
+ * Accenture design system; confirm branding before any official release.
+ */
+@theme {
+  /* Brand */
+  --color-brand: #a100ff;
+  --color-brand-hover: #8700d6;
+  --color-brand-deep: #460073;
+
+  /* Ink (text) */
+  --color-ink-strong: #171321;
+  --color-ink-muted: #6f6878;
+
+  /* Surfaces */
+  --color-surface-canvas: #f7f5fa;
+  --color-surface-card: #ffffff;
+  --color-surface-sidebar: #171321;
+  --color-surface-sidebar-muted: #241f33;
+
+  /* Borders */
+  --color-border-default: #eae5ef;
+  --color-border-strong: #d8d0e2;
+
+  /* States */
+  --color-success: #16865d;
+  --color-success-soft: #e3f3ec;
+  --color-warning: #b26b12;
+  --color-warning-soft: #fbf0e0;
+  --color-danger: #c43d52;
+  --color-danger-soft: #fae7ea;
+  --color-info: #2563a8;
+  --color-info-soft: #e6effa;
+
+  /* Radii */
+  --radius-card: 18px;
+  --radius-lg: 14px;
+  --radius-md: 10px;
+  --radius-sm: 8px;
+
+  /* Typography */
+  --font-sans: var(--font-inter), "Segoe UI", system-ui, sans-serif;
+
+  /* Elevation (restrained) */
+  --shadow-card: 0 1px 2px rgba(23, 19, 33, 0.04), 0 2px 8px rgba(23, 19, 33, 0.04);
+  --shadow-pop: 0 8px 28px rgba(23, 19, 33, 0.12);
+
+  /* Motion */
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+:root {
+  --background: var(--color-surface-canvas);
+  --foreground: var(--color-ink-strong);
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  min-height: 100%;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Focus visibility, keyboard accessibility (WCAG 2.2) */
+:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Thin, unobtrusive scrollbars */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border-strong) transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@keyframes compass-pulse {
+  0%, 100% { opacity: 0.35; transform: scale(0.85); }
+  50% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Applied to page content on navigation for a gentle entrance. */
+.animate-page {
+  animation: fade-in-up 300ms var(--ease-out-soft) both;
+}

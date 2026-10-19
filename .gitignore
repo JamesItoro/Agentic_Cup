@@ -1,0 +1,23 @@
+# Secrets — never commit real keys
+.env
+.env.local
+.env.*.local
+
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Next.js build output
+**/.next/
+**/out/
+**/build/
+
+# Logs & caches
+*.log
+npm-debug.log*
+.DS_Store
+*.tsbuildinfo
+
+# Editor
+.vscode/
+.idea/
