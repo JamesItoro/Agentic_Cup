@@ -24,7 +24,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { KpiTile } from "@/components/dashboard/kpi-tile";
 import { AskLauncher } from "@/components/dashboard/ask-launcher";
 import { FaqPanel } from "@/components/dashboard/faq-panel";
-import { DocumentCard } from "@/components/documents/document-card";
+import { RecommendedReading } from "@/components/dashboard/recommended-reading";
 import { ContactCard } from "@/components/team/contact-card";
 import { TaskItem } from "@/components/tasks/task-item";
 import { formatDate } from "@/lib/utils";
@@ -149,19 +149,7 @@ export default async function DashboardPage() {
         <FaqPanel />
 
         <div className="space-y-6">
-          <Card>
-            <CardHeader className="flex-row items-center justify-between">
-              <CardTitle>Recommended for you</CardTitle>
-              <Link href="/knowledge" className="text-xs font-medium text-brand hover:text-brand-hover">
-                Knowledge hub
-              </Link>
-            </CardHeader>
-            <CardContent className="grid gap-3 sm:grid-cols-2">
-              {docs.slice(0, 4).map((d) => (
-                <DocumentCard key={d.id} doc={d} />
-              ))}
-            </CardContent>
-          </Card>
+          <RecommendedReading docs={docs} />
 
           <Card>
             <CardHeader className="flex-row items-center justify-between">

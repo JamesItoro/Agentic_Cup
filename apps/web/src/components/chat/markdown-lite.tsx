@@ -1,4 +1,5 @@
 import React from "react";
+import { ShieldCheck } from "lucide-react";
 
 /** Inline formatting: **bold** and `code`. Text is escaped by React. */
 function renderInline(text: string, keyPrefix: string): React.ReactNode[] {
@@ -63,12 +64,32 @@ export function MarkdownLite({ text }: { text: string }) {
           );
         }
 
-        // Highlight a trailing "Confidence: ..." line.
+        // Highlight a trailing "Confidence: ..." line on an info (light-blue)
+        // panel, with the level on its own line and the reason beneath.
         if (/^confidence\b/i.test(block.trim())) {
+          const m = block
+            .trim()
+            .match(/^confidence:?\s*(high|medium|low)\b[\s,.:–—-]*([\s\S]*)$/i);
+          const level = m ? m[1][0].toUpperCase() + m[1].slice(1).toLowerCase() : null;
+          let reason = m ? m[2].trim() : "";
+          if (reason) reason = reason[0].toUpperCase() + reason.slice(1);
+
           return (
-            <p key={bi} className="rounded-[var(--radius-sm)] border border-border-default bg-surface-canvas px-3 py-2 text-xs text-ink-muted">
-              {renderInline(block, `${bi}`)}
-            </p>
+            <div
+              key={bi}
+              className="rounded-[var(--radius-md)] border border-info/20 bg-info-soft px-3.5 py-2.5 text-info"
+            >
+              {level ? (
+                <>
+                  <p className="flex items-center gap-1.5 text-sm font-semibold">
+                    <ShieldCheck className="size-4" /> Confidence: {level}
+                  </p>
+                  {reason ? <p className="mt-1 text-xs leading-relaxed text-info/90">{reason}</p> : null}
+                </>
+              ) : (
+                <p className="text-xs">{renderInline(block, `${bi}`)}</p>
+              )}
+            </div>
           );
         }
 

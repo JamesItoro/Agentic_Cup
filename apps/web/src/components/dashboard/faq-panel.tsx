@@ -131,11 +131,10 @@ export function FaqPanel() {
 
       {/* FAQ accordion */}
       <div className="space-y-1 p-3">
-        {FAQS.map((faq, i) => (
+        {FAQS.map((faq) => (
           <details
             key={faq.question}
             name="phoenix-faq"
-            open={i === 0}
             className="group rounded-[var(--radius-md)] transition-colors open:bg-surface-canvas/70 hover:bg-surface-canvas/50"
           >
             <summary className="flex cursor-pointer list-none items-center gap-3 rounded-[var(--radius-md)] px-2.5 py-2.5 [&::-webkit-details-marker]:hidden">
