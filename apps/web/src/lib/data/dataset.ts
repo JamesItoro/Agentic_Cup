@@ -18,6 +18,7 @@ import type {
   Project,
   ProjectUpdate,
   TeamContact,
+  TeamMember,
 } from "@/types";
 
 const DAY = 86_400_000;
@@ -179,6 +180,74 @@ function tc(
   return { id, projectId: PROJECT_PHOENIX, name, role, responsibility, email, verifiedAt, sourceDocumentId };
 }
 
+// ─── Team roster (Team Org Chart, 03_Team_Org_Chart.pdf) ─────────────────────
+// Faithful to the formal role, workstream and reporting line recorded in the
+// org chart (last updated 15 July 2025, maintained by Maria Osei). Day-to-day
+// task reassignments are tracked on sprint boards and are not reflected here,
+// in line with the note on that document.
+const ORG_VERIFIED = "2025-07-15";
+
+/** Workstreams in the order they are presented, with the leadership tier first. */
+export const WORKSTREAM_ORDER = [
+  "Account Leadership",
+  "Cross-workstream",
+  "Conversational AI",
+  "Data & Integration",
+  "Change & Adoption",
+] as const;
+
+export const teamRoster: TeamMember[] = [
+  // Engagement leadership
+  tm("tm-tom", "Tom Whitfield", "Engagement Partner", "Account Leadership", "Accenture Managing Director (off-project)", "tom.whitfield@accenture.com", true, "Commercials, client relationship and escalations."),
+  tm("tm-maria", "Maria Osei", "Project Lead", "Cross-workstream", "Tom Whitfield", "maria.osei@accenture.com", true, "Overall delivery, status, scope and change control."),
+
+  // Conversational AI
+  tm("tm-aisha", "Aisha Rahman", "Workstream Lead", "Conversational AI", "Maria Osei", "aisha.rahman@accenture.com", true, "ConvAI architecture, Jira board and the latency fix."),
+  tm("tm-sarah", "Sarah Kowalski", "NLU / Intent Classification Engineer", "Conversational AI", "Aisha Rahman", "sarah.kowalski@accenture.com", false, null),
+  tm("tm-jordan", "Jordan Reyes", "Bot Developer (Lex / Connect)", "Conversational AI", "Aisha Rahman", "jordan.reyes@accenture.com", false, "Currently on the p95 latency investigation (PHX-118/119)."),
+  tm("tm-ben", "Ben Foster", "Conversation Designer", "Conversational AI", "Aisha Rahman", "ben.foster@accenture.com", false, null),
+  tm("tm-priyanka", "Priyanka Nair", "QA Engineer", "Conversational AI", "Aisha Rahman", "priyanka.nair@accenture.com", false, null),
+
+  // Data & Integration
+  tm("tm-priya", "Priya Shah", "Workstream Lead", "Data & Integration", "Maria Osei", "priya.shah@accenture.com", true, "Data pipeline, access requests and data quality."),
+  tm("tm-alex", "Alex Turner", "Data Engineer", "Data & Integration", "Priya Shah", "alex.turner@accenture.com", false, null, true),
+  tm("tm-liam", "Liam O'Connor", "Integration Engineer", "Data & Integration", "Priya Shah", "liam.oconnor@accenture.com", false, null),
+  tm("tm-fatima", "Fatima Al-Sayed", "Data Quality Analyst", "Data & Integration", "Priya Shah", "fatima.al-sayed@accenture.com", false, "Legacy order-extract cleansing (PHX-104)."),
+  tm("tm-ravi", "Ravi Kumar", "Backend Developer", "Data & Integration", "Priya Shah", "ravi.kumar@accenture.com", false, null),
+
+  // Change & Adoption
+  tm("tm-marcus", "Marcus Webb", "Workstream Lead", "Change & Adoption", "Maria Osei", "marcus.webb@accenture.com", true, "Training, comms, pilot stores and Slack/Teams access."),
+  tm("tm-emma", "Emma Clarke", "Training & Comms Lead", "Change & Adoption", "Marcus Webb", "emma.clarke@accenture.com", false, null),
+  tm("tm-noah", "Noah Bennett", "Change Analyst", "Change & Adoption", "Marcus Webb", "noah.bennett@accenture.com", false, null),
+];
+
+function tm(
+  id: string,
+  name: string,
+  role: string,
+  workstream: string,
+  reportsTo: string | null,
+  email: string | null,
+  isLead: boolean,
+  note: string | null,
+  onLeave = false,
+): TeamMember {
+  return {
+    id,
+    projectId: PROJECT_PHOENIX,
+    name,
+    role,
+    workstream,
+    reportsTo,
+    email,
+    note,
+    isLead,
+    onLeave,
+    verifiedAt: ORG_VERIFIED,
+    sourceDocumentId: "d-org",
+  };
+}
+
 // ─── Project pulse (updates / blockers / milestones / demo) ──────────────────
 export const projectUpdates: ProjectUpdate[] = [
   {
@@ -242,16 +311,16 @@ export const projectUpdates: ProjectUpdate[] = [
 
 // ─── Onboarding tasks for the demo new joiner (Noah) ─────────────────────────
 export const onboardingTasks: OnboardingTask[] = [
+  // Discover
   task("ob-1", "Read the Statement of Work", "Understand the agreed scope, deliverables and commercial boundaries for Project Phoenix.", "discover", "completed", "high", -2, "Tom Whitfield", "d-sow"),
   task("ob-2", "Review the Solution Architecture (HLD)", "Get the end-to-end picture: AWS Bedrock intent classification, RAG layer and the legacy order-data integration.", "discover", "completed", "high", -1, "Aisha Rahman", "d-hld"),
-  task("ob-3", "Read the latest Week 11 status report", "Know where delivery stands today, current RAG status is Amber, driven by latency and data-quality risks.", "discover", "in_progress", "medium", 1, "Maria Osei", "d-status-11"),
+  // Access
   task("ob-4", "Request AWS Bedrock & account access", "Raise an access request for the Bedrock-backed environment and shared AWS account. Owner can approve.", "access", "blocked", "high", 1, "Priya Shah", null),
   task("ob-5", "Get added to the Jira / ADO board", "You'll pick tickets from here. Ask to be added with developer permissions.", "access", "todo", "high", 2, "Aisha Rahman", "d-jira"),
-  task("ob-6", "Join Teams channels and Slack workspace", "Daily standup is on Teams; broader chatter is on Slack. Change & Adoption manages invites.", "access", "completed", "medium", -1, "Marcus Webb", "d-slack"),
-  task("ob-7", "Study the Data Dictionary", "Learn the order-history and customer entities you'll work against, including the known duplicate-customerId issue.", "learn", "todo", "medium", 3, "Priya Shah", "d-datadict"),
+  // Learn
+  task("ob-7", "Study the Data Dictionary", "Learn the order-history and customer entities you'll work against, including the known duplicate-customerId issue.", "learn", "in_progress", "medium", 3, "Priya Shah", "d-datadict"),
   task("ob-8", "Review the API Spec excerpt", "Understand the order-status endpoint contracts before touching backend code.", "learn", "todo", "medium", 3, "Ravi Kumar", "d-apispec"),
-  task("ob-9", "Read the Testing Strategy", "Know the UAT approach and your responsibilities for unit/integration coverage.", "learn", "todo", "low", 4, "Priyanka Nair", "d-testing"),
-  task("ob-10", "Meet the Data & Integration workstream lead", "Intro call with Priya Shah to understand current priorities and where you can help.", "learn", "todo", "medium", 2, "Priya Shah", "d-org"),
+  // Contribute
   task("ob-11", "Pick up a starter ticket", "Choose a good-first-issue from the board to make an early, low-risk contribution.", "contribute", "todo", "high", 5, "Aisha Rahman", "d-jira"),
   task("ob-12", "Pair on the latency fix investigation", "Shadow Jordan on PHX-118/119, trimming RAG context and streaming responses to hit the 3.5s target.", "contribute", "todo", "low", 6, "Jordan Reyes", "d-standup"),
 ];

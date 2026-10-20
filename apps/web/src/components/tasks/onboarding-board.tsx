@@ -40,10 +40,30 @@ export function OnboardingBoard({
     return map;
   }, [tasks]);
 
+  const totalDone = tasks.filter((t) => t.status === "completed").length;
+
+  function renderTask(t: OnboardingTask) {
+    return (
+      <TaskItem
+        key={t.id}
+        task={t}
+        documentTitle={t.sourceDocumentId ? docTitleById[t.sourceDocumentId] : null}
+      />
+    );
+  }
+
+  const filterLabel = FILTERS.find((f) => f.key === filter)?.label.toLowerCase();
+
   return (
-    <Tabs defaultValue="discover">
+    <Tabs defaultValue="all">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <TabsList>
+          <TabsTrigger value="all">
+            All
+            <span className="text-xs opacity-70">
+              {totalDone}/{tasks.length}
+            </span>
+          </TabsTrigger>
           {STAGES.map((s) => {
             const count = byStage[s].length;
             const done = byStage[s].filter((t) => t.status === "completed").length;
@@ -74,6 +94,49 @@ export function OnboardingBoard({
         </div>
       </div>
 
+      {/* All: every task, grouped by stage */}
+      <TabsContent value="all">
+        {(() => {
+          const sections = STAGES.map((s) => ({
+            stage: s,
+            visible: byStage[s].filter((t) => matches(t, filter)),
+          })).filter((sec) => sec.visible.length > 0);
+
+          if (sections.length === 0) {
+            return (
+              <EmptyState
+                icon={ListChecks}
+                title="Nothing to show"
+                description={`No ${filter === "all" ? "" : filterLabel + " "}tasks right now.`}
+              />
+            );
+          }
+
+          return (
+            <div className="space-y-7">
+              {sections.map(({ stage, visible }) => {
+                const done = byStage[stage].filter((t) => t.status === "completed").length;
+                return (
+                  <section key={stage}>
+                    <div className="mb-3 flex items-center gap-2">
+                      <h3 className="text-sm font-semibold tracking-tight text-ink-strong">
+                        {stageMeta[stage].label}
+                      </h3>
+                      <span className="text-sm text-ink-muted">· {stageMeta[stage].blurb}</span>
+                      <Badge variant="neutral" className="ml-auto">
+                        {done}/{byStage[stage].length} done
+                      </Badge>
+                    </div>
+                    <div className="space-y-3">{visible.map(renderTask)}</div>
+                  </section>
+                );
+              })}
+            </div>
+          );
+        })()}
+      </TabsContent>
+
+      {/* Per-stage views */}
       {STAGES.map((s) => {
         const visible = byStage[s].filter((t) => matches(t, filter));
         return (
@@ -84,18 +147,12 @@ export function OnboardingBoard({
             </div>
             <div className="space-y-3">
               {visible.length > 0 ? (
-                visible.map((t) => (
-                  <TaskItem
-                    key={t.id}
-                    task={t}
-                    documentTitle={t.sourceDocumentId ? docTitleById[t.sourceDocumentId] : null}
-                  />
-                ))
+                visible.map(renderTask)
               ) : (
                 <EmptyState
                   icon={ListChecks}
                   title="Nothing here"
-                  description={`No ${filter === "all" ? "" : FILTERS.find((f) => f.key === filter)?.label.toLowerCase() + " "}tasks in this stage.`}
+                  description={`No ${filter === "all" ? "" : filterLabel + " "}tasks in this stage.`}
                 />
               )}
             </div>

@@ -8,6 +8,8 @@ export type ProjectRole = "member" | "manager" | "admin";
 
 export type TaskStatus = "todo" | "in_progress" | "completed" | "blocked";
 export type TaskPriority = "high" | "medium" | "low";
+/** Self-rated confidence a user records when reflecting on a completed task. */
+export type TaskConfidence = "high" | "medium" | "low";
 
 /** Onboarding stages used for the Week-1 journey grouping. */
 export type OnboardingStage = "discover" | "access" | "learn" | "contribute";
@@ -67,6 +69,10 @@ export interface OnboardingTask {
   ownerName: string | null;
   /** Reference to the source document that motivates the task, when any. */
   sourceDocumentId: string | null;
+  /** Free-text note the user leaves on completing the task (Stage A: in-memory). */
+  reflectionComment?: string | null;
+  /** How confident the user felt after completing the task. */
+  reflectionConfidence?: TaskConfidence | null;
 }
 
 export interface Document {
@@ -104,6 +110,31 @@ export interface TeamContact {
   role: string;
   responsibility: string;
   email?: string | null;
+  verifiedAt: string | null;
+  sourceDocumentId: string | null;
+}
+
+/**
+ * A member of the delivery team, as recorded in the Team Org Chart.
+ * Faithful to the formal role, workstream and reporting line in that document.
+ */
+export interface TeamMember {
+  id: string;
+  projectId: string;
+  name: string;
+  role: string;
+  /** Formal workstream, e.g. "Conversational AI", "Data & Integration". */
+  workstream: string;
+  /** Formal reporting line; null for the top of the on-project tree. */
+  reportsTo: string | null;
+  email?: string | null;
+  /** Short grounded responsibility or current focus, where documented. */
+  note?: string | null;
+  /** True for a workstream lead (or the engagement's leadership). */
+  isLead: boolean;
+  /** True where the org chart flags the person as on leave. */
+  onLeave?: boolean;
+  /** Reflects the org chart's "last updated" date. */
   verifiedAt: string | null;
   sourceDocumentId: string | null;
 }

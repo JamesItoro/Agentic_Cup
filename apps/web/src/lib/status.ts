@@ -1,5 +1,5 @@
 import type { BadgeProps } from "@/components/ui/badge";
-import type { IndexStatus, TaskPriority, TaskStatus } from "@/types";
+import type { IndexStatus, TaskConfidence, TaskPriority, TaskStatus } from "@/types";
 
 type Variant = NonNullable<BadgeProps["variant"]>;
 
@@ -14,6 +14,12 @@ export const priorityMeta: Record<TaskPriority, { label: string; variant: Varian
   high: { label: "High", variant: "danger" },
   medium: { label: "Medium", variant: "warning" },
   low: { label: "Low", variant: "neutral" },
+};
+
+export const confidenceMeta: Record<TaskConfidence, { label: string; variant: Variant }> = {
+  high: { label: "High confidence", variant: "success" },
+  medium: { label: "Medium confidence", variant: "warning" },
+  low: { label: "Low confidence", variant: "danger" },
 };
 
 export const indexStatusMeta: Record<IndexStatus, { label: string; variant: Variant }> = {

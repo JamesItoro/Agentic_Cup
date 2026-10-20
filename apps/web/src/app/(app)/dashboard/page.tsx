@@ -13,7 +13,6 @@ import {
   getDocuments,
   getKpiSummary,
   getProject,
-  getProjectUpdates,
   getTasks,
   getTeamContacts,
 } from "@/lib/data";
@@ -24,7 +23,7 @@ import { ProgressRing } from "@/components/ui/progress-ring";
 import { EmptyState } from "@/components/ui/empty-state";
 import { KpiTile } from "@/components/dashboard/kpi-tile";
 import { AskLauncher } from "@/components/dashboard/ask-launcher";
-import { ProjectPulse } from "@/components/dashboard/project-pulse";
+import { FaqPanel } from "@/components/dashboard/faq-panel";
 import { DocumentCard } from "@/components/documents/document-card";
 import { ContactCard } from "@/components/team/contact-card";
 import { TaskItem } from "@/components/tasks/task-item";
@@ -42,12 +41,11 @@ export default async function DashboardPage() {
   if (!ctx) notFound();
   const { user, projectId } = ctx;
 
-  const [project, kpi, tasks, docs, updates, contacts] = await Promise.all([
+  const [project, kpi, tasks, docs, contacts] = await Promise.all([
     getProject(user.userId, projectId),
     getKpiSummary(user.userId, projectId),
     getTasks(user.userId, projectId),
     getDocuments(user.userId, projectId),
-    getProjectUpdates(user.userId, projectId),
     getTeamContacts(user.userId, projectId),
   ]);
   if (!project || !kpi) notFound();
@@ -146,9 +144,9 @@ export default async function DashboardPage() {
         <AskLauncher />
       </div>
 
-      {/* Pulse + recommendations */}
+      {/* FAQs + recommendations */}
       <div className="grid gap-6 lg:grid-cols-2">
-        <ProjectPulse updates={updates} docTitleById={docTitleById} />
+        <FaqPanel />
 
         <div className="space-y-6">
           <Card>

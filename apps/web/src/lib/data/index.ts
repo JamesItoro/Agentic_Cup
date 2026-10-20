@@ -7,6 +7,7 @@ import {
   projectUpdates,
   projects,
   teamContacts,
+  teamRoster,
 } from "./dataset";
 import type {
   Document,
@@ -16,8 +17,10 @@ import type {
   Profile,
   Project,
   ProjectUpdate,
+  TaskConfidence,
   TaskStatus,
   TeamContact,
+  TeamMember,
 } from "@/types";
 
 /**
@@ -33,6 +36,13 @@ const latency = () => Promise.resolve();
 /** In-memory task-status overrides, persists task completion for the life of
  * the dev server process (resets on restart, which is fine for the mock stage). */
 const taskStatusOverrides = new Map<string, TaskStatus>();
+
+/** In-memory completion reflections (comment + confidence), same lifetime. */
+interface Reflection {
+  comment: string | null;
+  confidence: TaskConfidence | null;
+}
+const taskReflectionOverrides = new Map<string, Reflection>();
 
 async function isMember(userId: string, projectId: string): Promise<boolean> {
   return memberships.some((m) => m.userId === userId && m.projectId === projectId);
@@ -59,7 +69,16 @@ export async function getProfile(userId: string): Promise<Profile | null> {
 
 function applyOverride(t: OnboardingTask): OnboardingTask {
   const status = taskStatusOverrides.get(t.id);
-  return status ? { ...t, status } : t;
+  const reflection = taskReflectionOverrides.get(t.id);
+  let out = status ? { ...t, status } : t;
+  if (reflection) {
+    out = {
+      ...out,
+      reflectionComment: reflection.comment,
+      reflectionConfidence: reflection.confidence,
+    };
+  }
+  return out;
 }
 
 export async function getTasks(userId: string, projectId: string): Promise<OnboardingTask[]> {
@@ -91,6 +110,27 @@ export async function updateTaskStatus(
   return applyOverride(task);
 }
 
+/**
+ * Save a completion reflection (comment + confidence) for a task. Authorises the
+ * same way as a status update: member of the project and owner of the task.
+ */
+export async function updateTaskReflection(
+  userId: string,
+  projectId: string,
+  taskId: string,
+  comment: string | null,
+  confidence: TaskConfidence | null,
+): Promise<OnboardingTask | null> {
+  await latency();
+  if (!(await isMember(userId, projectId))) return null;
+  const task = onboardingTasks.find(
+    (t) => t.id === taskId && t.projectId === projectId && t.assigneeId === userId,
+  );
+  if (!task) return null;
+  taskReflectionOverrides.set(taskId, { comment: comment?.trim() || null, confidence });
+  return applyOverride(task);
+}
+
 export async function getDocuments(userId: string, projectId: string): Promise<Document[]> {
   await latency();
   if (!(await isMember(userId, projectId))) return [];
@@ -112,6 +152,13 @@ export async function getTeamContacts(userId: string, projectId: string): Promis
   await latency();
   if (!(await isMember(userId, projectId))) return [];
   return teamContacts.filter((t) => t.projectId === projectId);
+}
+
+/** The full delivery-team roster from the Team Org Chart. Members-only data. */
+export async function getTeamRoster(userId: string, projectId: string): Promise<TeamMember[]> {
+  await latency();
+  if (!(await isMember(userId, projectId))) return [];
+  return teamRoster.filter((m) => m.projectId === projectId);
 }
 
 export async function getProjectUpdates(userId: string, projectId: string): Promise<ProjectUpdate[]> {
