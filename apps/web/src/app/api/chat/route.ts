@@ -51,8 +51,19 @@ export async function POST(req: Request) {
     );
   }
 
-  // Retrieve grounding context for the latest question.
-  const chunks = retrieve(lastUser.content);
+  // Retrieve grounding context for the current question, but anchored to the
+  // recent conversation rather than the latest message alone. Retrieving on one
+  // message at a time lets the grounded documents change from turn to turn, so a
+  // follow-up can surface different chunks than the answer it builds on and the
+  // model ends up publicly "correcting" itself. Folding in the last few user
+  // turns keeps the evidence stable across a thread; the latest question still
+  // dominates the ranking because it is the freshest and usually most specific.
+  const recentUserTurns = history
+    .filter((m) => m.role === "user")
+    .slice(-3)
+    .map((m) => m.content);
+  const retrievalQuery = recentUserTurns.join("\n");
+  const chunks = retrieve(retrievalQuery);
   const contextBlock = formatContext(chunks);
   const system = buildSystemPrompt(contextBlock);
 
