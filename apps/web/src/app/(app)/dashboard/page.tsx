@@ -22,6 +22,7 @@ import { Badge } from "@/components/ui/badge";
 import { ProgressRing } from "@/components/ui/progress-ring";
 import { EmptyState } from "@/components/ui/empty-state";
 import { KpiTile } from "@/components/dashboard/kpi-tile";
+import { ManagerDashboard } from "@/components/dashboard/manager-overview";
 import { AskLauncher } from "@/components/dashboard/ask-launcher";
 import { FaqPanel } from "@/components/dashboard/faq-panel";
 import { RecommendedReading } from "@/components/dashboard/recommended-reading";
@@ -39,7 +40,13 @@ function greeting() {
 export default async function DashboardPage() {
   const ctx = await getAppContext();
   if (!ctx) notFound();
-  const { user, projectId } = ctx;
+  const { user, projectId, role } = ctx;
+
+  // Project leads and admins get a team-onboarding tracking view instead of the
+  // new-joiner dashboard; the member checklist below is for joiners.
+  if (role !== "member") {
+    return <ManagerDashboard userId={user.userId} projectId={projectId} fullName={user.fullName} />;
+  }
 
   const [project, kpi, tasks, docs, contacts] = await Promise.all([
     getProject(user.userId, projectId),

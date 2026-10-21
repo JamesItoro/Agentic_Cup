@@ -17,6 +17,7 @@ import type {
   Profile,
   Project,
   ProjectUpdate,
+  TaskConfidence,
   TeamContact,
   TeamMember,
 } from "@/types";
@@ -84,7 +85,7 @@ export const projects: Project[] = [
 // ─── Memberships ─────────────────────────────────────────────────────────────
 // Noah (member) belongs ONLY to Phoenix, he must never see Atlas.
 export const memberships: Membership[] = [
-  { projectId: PROJECT_PHOENIX, userId: USER_MEMBER, role: "member", joinedAt: daysFromNow(-9) },
+  { projectId: PROJECT_PHOENIX, userId: USER_MEMBER, role: "member", joinedAt: daysFromNow(-3) },
   { projectId: PROJECT_PHOENIX, userId: USER_MANAGER, role: "manager", joinedAt: "2025-05-05" },
   { projectId: PROJECT_PHOENIX, userId: USER_ADMIN, role: "admin", joinedAt: "2025-05-05" },
   { projectId: PROJECT_ATLAS, userId: USER_ADMIN, role: "admin", joinedAt: "2025-09-01" },
@@ -312,16 +313,20 @@ export const projectUpdates: ProjectUpdate[] = [
 // ─── Onboarding tasks for the demo new joiner (Noah) ─────────────────────────
 export const onboardingTasks: OnboardingTask[] = [
   // Discover
-  task("ob-1", "Read the Statement of Work", "Understand the agreed scope, deliverables and commercial boundaries for Project Phoenix.", "discover", "completed", "high", -2, "Tom Whitfield", "d-sow"),
-  task("ob-2", "Review the Solution Architecture (HLD)", "Get the end-to-end picture: AWS Bedrock intent classification, RAG layer and the legacy order-data integration.", "discover", "completed", "high", -1, "Aisha Rahman", "d-hld"),
+  task("ob-1", "Read the Statement of Work", "Understand the agreed scope, deliverables and commercial boundaries for Project Phoenix.", "discover", "completed", "high", -2, "Tom Whitfield", "d-sow",
+    "Clear on the agreed scope and commercial boundaries. Noticed the recommendation-engine scope looks contested across sources, will confirm with Maria.", "high"),
+  task("ob-2", "Review the Solution Architecture (HLD)", "Get the end-to-end picture: AWS Bedrock intent classification, RAG layer and the legacy order-data integration.", "discover", "completed", "high", -1, "Aisha Rahman", "d-hld",
+    "Good grasp of the Bedrock intent flow and the RAG layer. Still a bit fuzzy on the legacy order-data integration, planning to revisit the Data Dictionary.", "medium"),
   // Access
   task("ob-4", "Request AWS Bedrock & account access", "Raise an access request for the Bedrock-backed environment and shared AWS account. Owner can approve.", "access", "blocked", "high", 1, "Priya Shah", null),
-  task("ob-5", "Get added to the Jira / ADO board", "You'll pick tickets from here. Ask to be added with developer permissions.", "access", "todo", "high", 2, "Aisha Rahman", "d-jira"),
+  task("ob-5", "Get added to the Jira / ADO board", "You'll pick tickets from here. Ask to be added with developer permissions.", "access", "completed", "high", 2, "Aisha Rahman", "d-jira",
+    "Added with developer permissions. Can see the sprint board and the PHX tickets, including the latency items.", "high"),
   // Learn
-  task("ob-7", "Study the Data Dictionary", "Learn the order-history and customer entities you'll work against, including the known duplicate-customerId issue.", "learn", "in_progress", "medium", 3, "Priya Shah", "d-datadict"),
-  task("ob-8", "Review the API Spec excerpt", "Understand the order-status endpoint contracts before touching backend code.", "learn", "todo", "medium", 3, "Ravi Kumar", "d-apispec"),
+  task("ob-7", "Study the Data Dictionary", "Learn the order-history and customer entities you'll work against, including the known duplicate-customerId issue.", "learn", "completed", "medium", 3, "Priya Shah", "d-datadict",
+    "Worked through the order-history and customer entities. Clear on the duplicate-customerId issue being cleansed under PHX-104.", "medium"),
+  task("ob-8", "Review the API Spec excerpt", "Understand the order-status endpoint contracts before touching backend code.", "learn", "in_progress", "medium", 3, "Ravi Kumar", "d-apispec"),
   // Contribute
-  task("ob-11", "Pick up a starter ticket", "Choose a good-first-issue from the board to make an early, low-risk contribution.", "contribute", "todo", "high", 5, "Aisha Rahman", "d-jira"),
+  task("ob-11", "Pick up a starter ticket", "Choose a good-first-issue from the board to make an early, low-risk contribution.", "contribute", "in_progress", "high", 5, "Aisha Rahman", "d-jira"),
   task("ob-12", "Pair on the latency fix investigation", "Shadow Jordan on PHX-118/119, trimming RAG context and streaming responses to hit the 3.5s target.", "contribute", "todo", "low", 6, "Jordan Reyes", "d-standup"),
 ];
 
@@ -335,6 +340,8 @@ function task(
   dueOffsetDays: number,
   ownerName: string | null,
   sourceDocumentId: string | null,
+  reflectionComment: string | null = null,
+  reflectionConfidence: TaskConfidence | null = null,
 ): OnboardingTask {
   return {
     id,
@@ -348,5 +355,7 @@ function task(
     dueAt: daysFromNow(dueOffsetDays),
     ownerName,
     sourceDocumentId,
+    reflectionComment,
+    reflectionConfidence,
   };
 }
